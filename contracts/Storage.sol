@@ -5,6 +5,7 @@ contract Storage {
     address private owner;
     mapping(string => mapping(address => bool)) private accessList;
     mapping(address => string[]) private uploaderFiles;
+    mapping(string => File) private cids;
 
     struct File {
         string uploaderName;
@@ -12,6 +13,7 @@ contract Storage {
         string fileCid;
         address ownerAddress;
         address[] recipientAddresses;
+        
     }
 
     mapping(string => File) private files;
@@ -97,6 +99,6 @@ contract Storage {
         return (file.uploaderName, file.fileName, file.ownerAddress, file.recipientAddresses);
     }
     function cidExists(string memory cid) public view returns (bool) {
-        return cids[cid].uploader != address(0);
+        return cids[cid].ownerAddress != address(0);
     }
 }

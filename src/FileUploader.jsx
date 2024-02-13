@@ -61,6 +61,13 @@ function FileUploaderComponent() {
             console.log(ethers.utils.isAddress(signer.address));
             
             const uploaderAddress = await signer.getAddress();
+            
+            // Check if the CID already exists in the contract
+            const cidExists = await contract.cidExists(fileCid);
+            if (cidExists) {
+                console.log('The file CID already exists in the contract.');
+                return;
+            }
 
             const transaction = await contract.uploadCid(uploaderName, fileName, fileCid, uploaderAddress, recipientAddresses);
             await transaction.wait();
@@ -111,6 +118,7 @@ function FileUploaderComponent() {
                     const fileInfo = await contract.viewFileInfo(cid);
                     setFileUrls(prevUrls => ({ ...prevUrls, [cid]: { url, fileInfo } }));
                     console.log('File URL:', url);
+                    console.log('File Info:', fileInfo[1]);
                     } 
                 }
             }
@@ -170,7 +178,7 @@ function FileUploaderComponent() {
             {Object.entries(fileUrls).map(([cid, url]) => (
                 <div key={cid}>
                     <p>CID: {cid}</p>
-                    {/* <p>File Name: {fileUrls[cid].fileInfo}</p> */}
+                    <p>File Name: {fileUrls[cid].fileInfo[1]}</p>
                     <a href={url} download>Download File</a>
                 </div>
             ))}
