@@ -1,0 +1,32 @@
+.FileUploader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+  }
+  
+  .FileUploader input[type="text"], .FileUploader input[type="file"] {
+    margin: 10px 0;
+    padding: 10px;
+    width: 30px;
+  }
+  
+  .FileUploader button {
+    margin: 10px 0;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .FileUploader button:hover {
+    background-color: #0056b3;
+  }
+  
+  .FileUploader p {
+    color: green;
+  }
