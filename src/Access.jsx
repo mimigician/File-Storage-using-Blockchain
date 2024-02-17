@@ -6,7 +6,7 @@ function Access({ contractAddress, abi }) {
 
   const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
   const PRIVATE_KEY = process.env.REACT_APP_PRIVATE_KEY;
-  const API_KEY = 'Hzg6WEnaqothqt1HOwPgAeW2vH0jRuEO';
+  const API_KEY = process.env.REACT_APP_API_KEY;
 
   const network = 'maticmum';
   const provider = new ethers.providers.AlchemyProvider(network, API_KEY);

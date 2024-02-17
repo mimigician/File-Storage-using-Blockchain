@@ -17,6 +17,7 @@ function FileUploaderComponent() {
     const fileInput = useRef(null);
     const [fileCid, setFileCid] = useState(null);
     const [fileContent, setFileContent] = useState(null);
+    const [savedMessage, setSavedMessage] = useState('');
 
     //const [fileUrl, setFileUrl] = useState(null);
     const [fileUrls, setFileUrls] = useState({});
@@ -73,6 +74,7 @@ function FileUploaderComponent() {
             await transaction.wait();
 
             console.log('CID saved to blockchain successfully!');
+            setSavedMessage('CID saved to blockchain successfully!');
 
             // Call the grantAccess function with the CID and recipient address
             const grantAccessTransaction = await contract.grantAccess(fileCid, recipientAddresses);
@@ -158,13 +160,12 @@ function FileUploaderComponent() {
                 onChange={(e) => setRecipientAddresses(e.target.value)}
             />
             <input type="file" ref={fileInput} />
-            <input
-            type="text"
-            placeholder="Uploader Address"
-            onChange={(e) => setUploaderAddress(e.target.value)}
-        />
+            
             <button onClick={handleUploadToIPFS}>Upload to IPFS</button>
             <button onClick={saveCidToBlockchain}>Save CID to Blockchain</button>
+            <p>{savedMessage}</p> <br/>
+            <div>
+            </div>
             {/* <button onClick={fetchFileFromIPFS}>Fetch File</button>
             {fileCid && <p>Your file CID is: {fileCid}</p>}
             {fileContent && (
@@ -173,13 +174,18 @@ function FileUploaderComponent() {
                     <pre>{fileContent}</pre>
                 </div>
             )} */}
+            <input
+            type="text"
+            placeholder="Uploader Address"
+            onChange={(e) => setUploaderAddress(e.target.value)}
+        />
             <button onClick={fetchFileFromIPFS}>Fetch File from IPFS</button>
             
             {Object.entries(fileUrls).map(([cid, url]) => (
                 <div key={cid}>
                     <p>CID: {cid}</p>
-                    <p>File Name: {fileUrls[cid].fileInfo[1]}</p>
-                    <a href={url} download>Download File</a>
+                    <p>File Name: {fileUrls[cid].fileInfo[1]}</p> 
+                    {url && <a href={url} download>Download File</a>}
                 </div>
             ))}
             </div>

@@ -81,6 +81,19 @@
   {
     "inputs": [
       {
+        "internalType": "string",
+        "name": "fileCid",
+        "type": "string"
+      }
+    ],
+    "name": "deleteFileRecord",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "uploaderAddress",
         "type": "address"
