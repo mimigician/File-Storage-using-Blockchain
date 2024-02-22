@@ -20,7 +20,7 @@ contract Storage {
     string[] private fileCids;
 
     event CidUploaded(string fileName, 
-        string fileCid, address ownerAddress, address recipientAddresses);
+        string fileCid, address ownerAddress);
 
     constructor() {
         owner = msg.sender;
@@ -45,7 +45,7 @@ contract Storage {
 
     function uploadCid(
         string memory uploaderName, string memory fileName, 
-        string memory fileCid, address ownerAddress, address recipientAddresses
+        string memory fileCid, address ownerAddress
         ) public {
         require(files[fileCid].ownerAddress == address(0), "File CID already uploaded");
 
@@ -53,13 +53,13 @@ contract Storage {
         files[fileCid].fileName = fileName;
         files[fileCid].fileCid = fileCid;
         files[fileCid].ownerAddress = msg.sender;
-        files[fileCid].recipientAddresses.push(recipientAddresses);
+        //files[fileCid].recipientAddresses.push(recipientAddresses);
         accessList[fileCid][ownerAddress] = true;
         
         fileCids.push(fileCid);
         uploaderFiles[msg.sender].push(fileCid);
 
-        emit CidUploaded(fileName, fileCid, ownerAddress, recipientAddresses);
+        emit CidUploaded(fileName, fileCid, ownerAddress);
     }
 
     function getCid(address uploaderAddress) public view returns (string memory) {
@@ -102,7 +102,7 @@ contract Storage {
         return cids[cid].ownerAddress != address(0);
     }
 
-    function deleteFileRecord(string memory fileCid) public  {
+    function deleteFileRecord(string memory fileCid) public {
         require(files[fileCid].ownerAddress != address(0), "No file record found for this CID");
         require(files[fileCid].ownerAddress == msg.sender, "Only the owner can delete this file record");
 

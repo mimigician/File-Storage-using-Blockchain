@@ -24,12 +24,6 @@
         "internalType": "address",
         "name": "ownerAddress",
         "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "recipientAddresses",
-        "type": "address"
       }
     ],
     "name": "CidUploaded",
@@ -185,11 +179,6 @@
       {
         "internalType": "address",
         "name": "ownerAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "recipientAddresses",
         "type": "address"
       }
     ],

@@ -7,7 +7,7 @@ function DeleteFileRecord() {
   const [deleteResult, setDeleteResult] = useState('');
 
   const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
-  const PRIVATE_KEY = process.env.REACT_APP_PRIVATE_KEY_1;
+  const PRIVATE_KEY = process.env.REACT_APP_PRIVATE_KEY;
   const API_KEY = process.env.REACT_APP_API_KEY;
 
   const network = 'maticmum';
@@ -28,7 +28,7 @@ function DeleteFileRecord() {
       setDeleteResult('File record deleted successfully!');
     } catch (error) {
       console.error('Error deleting file record:', error);
-      setDeleteResult('Failed to delete file record' + '-->' + error);
+      setDeleteResult('Failed to delete file record');
     }
   };
 
