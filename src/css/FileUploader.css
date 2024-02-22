@@ -1,4 +1,4 @@
-.FileUploader {
+/* .FileUploader {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,6 +12,14 @@
     margin: 10px 0;
     padding: 10px;
     width: 30px;
+  }
+  
+  .FileUploader input[type="text"] {
+    display: block;
+  }
+  
+  .FileUploader input[type="file"] {
+    display: block;
   }
   
   .FileUploader button {
@@ -29,4 +37,53 @@
   
   .FileUploader p {
     color: green;
+  } */
+
+  .FileUploader {
+    text-align: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  h1 {
+    color: #333;
+  }
+  
+  input[type="text"], input[type="file"] {
+    margin: 10px auto;
+    padding: 10px;
+    width: 300px;
+    display: block;
+  }
+  
+  button {
+    margin: 10px 0;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+
+  button + button {
+    margin-left: 10px;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  p {
+    color: green;
+  }
+  .file{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    width: 500px;
   }

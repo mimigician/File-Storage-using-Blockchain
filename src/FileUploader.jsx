@@ -18,14 +18,16 @@ function FileUploaderComponent() {
     const [fileCid, setFileCid] = useState(null);
     const [fileContent, setFileContent] = useState(null);
     const [savedMessage, setSavedMessage] = useState('');
+    const [deleteResult, setDeleteResult] = useState('');
 
     //const [fileUrl, setFileUrl] = useState(null);
-    const [fileUrls, setFileUrls] = useState({});
+    //const [fileUrls, setFileUrls] = useState({});
+    const [fileUrls, setFileUrls] = useState([]);
     const [uploaderAddress, setUploaderAddress] = useState('');
     const[viewIPFSimage, setViewIPFSimage]=useState(false);
 
     const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
-    const PRIVATE_KEY = process.env.REACT_APP_PRIVATE_KEY;
+    const PRIVATE_KEY = process.env.REACT_APP_PRIVATE_KEY_1;
     const API_KEY = 'Hzg6WEnaqothqt1HOwPgAeW2vH0jRuEO';
 
     async function handleUploadToIPFS() {
@@ -69,12 +71,15 @@ function FileUploaderComponent() {
                 console.log('The file CID already exists in the contract.');
                 return;
             }
-
+            const start = performance.now();
             const transaction = await contract.uploadCid(uploaderName, fileName, fileCid, uploaderAddress, recipientAddresses);
             await transaction.wait();
+            const end = performance.now();
+            console.log('Time taken to save CID to blockchain:', end - start, 'ms');
 
             console.log('CID saved to blockchain successfully!');
             setSavedMessage('CID saved to blockchain successfully!');
+            console.log(savedMessage);
 
             // Call the grantAccess function with the CID and recipient address
             const grantAccessTransaction = await contract.grantAccess(fileCid, recipientAddresses);
@@ -93,37 +98,46 @@ function FileUploaderComponent() {
             const provider = new ethers.providers.AlchemyProvider(network, API_KEY);
             const signer = new ethers.Wallet(PRIVATE_KEY, provider);
             setViewIPFSimage(true);
-    
+            const start = performance.now();
             const contractABI = require('./abis/Storage.json');
             const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
     
             const uploadedCids = await contract.getUploadedCids(uploaderAddress);
             console.log('Uploader Address:', uploaderAddress);
             console.log('Uploaded Cids:', uploadedCids);
+            const end = performance.now();
+            console.log('Time taken to save CID to blockchain:', end - start, 'ms');
+            let urls=[];
             for (let i = 0; i < uploadedCids.length; i++) {
                 const cid = uploadedCids[i];
                 const accessList = await contract.canAccess(cid, signer.address);
                 console.log('Access List:', accessList);
+    const signerAddress = await signer.getAddress();
+    console.log('Signer Address:', signerAddress);
+                
                 if (await contract.canAccess(cid, signer.address)) {
                     console.log('Can Access:', cid);
                     
-                    const stream = client.cat(cid);
+                    const stream = client.cat(cid.toString());
                     let data = [];
 
                     for await (const chunk of stream) {
                         data.push(chunk);
-                    }
-                    // Create a Blob from the data
+                      }
+                    // Create a Blob from the data 
                     const blob = new Blob(data, { type: 'image/jpeg' });
                     // Create a URL from the Blob
                     const url = URL.createObjectURL(blob);
+                    urls.push({ cid: cid, url: url });
                     const fileInfo = await contract.viewFileInfo(cid);
-                    setFileUrls(prevUrls => ({ ...prevUrls, [cid]: { url, fileInfo } }));
-                    console.log('File URL:', url);
-                    console.log('File Info:', fileInfo[1]);
+                    //setFileUrls(prevUrls => ({ ...prevUrls, [cid]: { url, fileInfo } }));
+                    // console.log('File URL:', url);
+                    // console.log('File Info:', fileInfo[1]);
                     } 
                 }
+                setFileUrls(urls);
             }
+            
                 catch (error) {
                         console.error('Error fetching file from IPFS:', error);
                     }
@@ -143,7 +157,7 @@ function FileUploaderComponent() {
     }
 
     return (
-        <div>
+        <div className='FileUploader'>
             <input
                 type="text"
                 placeholder="Uploader Name"
@@ -163,7 +177,7 @@ function FileUploaderComponent() {
             
             <button onClick={handleUploadToIPFS}>Upload to IPFS</button>
             <button onClick={saveCidToBlockchain}>Save CID to Blockchain</button>
-            <p>{savedMessage}</p> <br/>
+            <p style={{ margin: '10px 0', color: 'black', fontWeight: 'bold' }}>{savedMessage}</p> <br/>
             <div>
             </div>
             {/* <button onClick={fetchFileFromIPFS}>Fetch File</button>
@@ -181,13 +195,20 @@ function FileUploaderComponent() {
         />
             <button onClick={fetchFileFromIPFS}>Fetch File from IPFS</button>
             
-            {Object.entries(fileUrls).map(([cid, url]) => (
-                <div key={cid}>
-                    <p>CID: {cid}</p>
+            {/* {Object.entries(fileUrls).map(([cid, url]) => (
+                <div className='file' key={cid}>
+                    
                     <p>File Name: {fileUrls[cid].fileInfo[1]}</p> 
                     {url && <a href={url} download>Download File</a>}
                 </div>
-            ))}
+            ))} */}
+            {fileUrls.map((file, index) => (
+              <div className='file' key={index}>
+                <p>CID: {file.cid}</p>
+                <a  href={file.url} download>Download File</a>
+            </div>
+
+        ))}
             </div>
     );
 }

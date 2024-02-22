@@ -31,11 +31,11 @@ contract Storage {
         _;
     }
 
-    function grantAccess(string memory cid, address user) public onlyOwner {
+    function grantAccess(string memory cid, address user) public  {
         accessList[cid][user] = true;
     }
 
-    function revokeAccess(string memory cid, address user) public onlyOwner {
+    function revokeAccess(string memory cid, address user) public  {
         accessList[cid][user] = false;
     }
 
@@ -102,32 +102,33 @@ contract Storage {
         return cids[cid].ownerAddress != address(0);
     }
 
-    function deleteFileRecord(string memory fileCid) public onlyOwner {
-    require(files[fileCid].ownerAddress != address(0), "No file record found for this CID");
+    function deleteFileRecord(string memory fileCid) public  {
+        require(files[fileCid].ownerAddress != address(0), "No file record found for this CID");
+        require(files[fileCid].ownerAddress == msg.sender, "Only the owner can delete this file record");
 
-    // Store the uploaderAddress before deleting the file record
-    address uploaderAddress = files[fileCid].ownerAddress;
+        // Store the uploaderAddress before deleting the file record
+        address uploaderAddress = files[fileCid].ownerAddress;
 
-    delete files[fileCid];
+        delete files[fileCid];
 
-    // Remove the fileCid from the fileCids array
-    for (uint256 i = 0; i < fileCids.length; i++) {
-        if (keccak256(abi.encodePacked(fileCids[i])) == keccak256(abi.encodePacked(fileCid))) {
-            fileCids[i] = fileCids[fileCids.length - 1];
-            fileCids.pop();
-            break;
+        // Remove the fileCid from the fileCids array
+        for (uint256 i = 0; i < fileCids.length; i++) {
+            if (keccak256(abi.encodePacked(fileCids[i])) == keccak256(abi.encodePacked(fileCid))) {
+                fileCids[i] = fileCids[fileCids.length - 1];
+                fileCids.pop();
+                break;
+            }
+        }
+
+        // Remove the fileCid from the uploaderFiles mapping
+        for (uint256 i = 0; i < uploaderFiles[uploaderAddress].length; i++) {
+            if (keccak256(abi.encodePacked(uploaderFiles[uploaderAddress][i])) == keccak256(abi.encodePacked(fileCid))) {
+                uploaderFiles[uploaderAddress][i] = uploaderFiles[uploaderAddress][uploaderFiles[uploaderAddress].length - 1];
+                uploaderFiles[uploaderAddress].pop();
+                break;
+            }
         }
     }
-
-    // Remove the fileCid from the uploaderFiles mapping
-    for (uint256 i = 0; i < uploaderFiles[uploaderAddress].length; i++) {
-        if (keccak256(abi.encodePacked(uploaderFiles[uploaderAddress][i])) == keccak256(abi.encodePacked(fileCid))) {
-            uploaderFiles[uploaderAddress][i] = uploaderFiles[uploaderAddress][uploaderFiles[uploaderAddress].length - 1];
-            uploaderFiles[uploaderAddress].pop();
-            break;
-        }
-    }
-}
 
     
 }

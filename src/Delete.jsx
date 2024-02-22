@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
+import './css/Delete.css'
 
 function DeleteFileRecord() {
   const [fileCid, setFileCid] = useState('');
   const [deleteResult, setDeleteResult] = useState('');
 
   const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
-  const PRIVATE_KEY = process.env.REACT_APP_PRIVATE_KEY;
+  const PRIVATE_KEY = process.env.REACT_APP_PRIVATE_KEY_1;
   const API_KEY = process.env.REACT_APP_API_KEY;
 
   const network = 'maticmum';
@@ -18,10 +19,12 @@ function DeleteFileRecord() {
 
   const deleteFileRecord = async () => {
     try {
+      const start = performance.now();
       const transaction = await contract.deleteFileRecord(fileCid);
 
       await transaction.wait();
-
+      const end = performance.now();
+      console.log('Time taken to save CID to blockchain:', end - start, 'ms');
       setDeleteResult('File record deleted successfully!');
     } catch (error) {
       console.error('Error deleting file record:', error);
@@ -34,8 +37,8 @@ function DeleteFileRecord() {
       <h1>Delete File Record</h1>
       <input type="text" placeholder="File CID" onChange={(e) => setFileCid(e.target.value)} />
 
-      <button onClick={deleteFileRecord}>Delete File Record</button> <br/>
-      <p>{deleteResult}</p><br/>
+      <button onClick={deleteFileRecord}>Delete File Record</button> <br />
+      <p style={{ margin: '10px 0', color: 'black', fontWeight: 'bold' }}>{deleteResult}</p><br />
     </div>
   );
 }

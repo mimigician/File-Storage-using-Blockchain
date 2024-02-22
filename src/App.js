@@ -6,6 +6,7 @@ import DeleteFileRecord from './Delete';
 
 import './css/FileUploader.css';
 import './css/App.css';
+import './css/Delete.css'
 
 function App() {
   const navigate = useNavigate();

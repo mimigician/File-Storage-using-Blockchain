@@ -1,0 +1,35 @@
+.delete-file-record-container {
+    text-align: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+h1 {
+    color: #333;
+    margin-top: 20px;
+}
+  
+  input[type="text"], input[type="file"] {
+    margin: 10px auto;
+    padding: 10px;
+    width: 300px;
+    display: block;
+  }
+  
+  button {
+    margin: 10px 0;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+    
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  p {
+    color: green;
+  }
