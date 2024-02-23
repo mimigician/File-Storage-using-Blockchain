@@ -44,7 +44,8 @@ function FileUploaderComponent() {
 
 
     const temp = "tota";
-    const encrypted = encrypt(temp, process.env.REACT_APP_ENCRYPTION_KEY);
+    //const encrypted = encrypt(temp, process.env.REACT_APP_ENCRYPTION_KEY);
+    const encrypted = "oluQaGB1UDG1ftiGI0W9CzAk7weaJ68dLzJCuiKqZPtGTee+s8T3RACItqzwAGJM";
     //console.log('enc: ',encrypted);
     const decrypted = decrypt(encrypted, process.env.REACT_APP_ENCRYPTION_KEY);
     //console.log('dec', decrypted);
@@ -151,17 +152,21 @@ function FileUploaderComponent() {
 
                     //const stream = client.cat(cid.toString());
                     const stream = client.cat(decrypt(cid.toString(),process.env.REACT_APP_ENCRYPTION_KEY).toString());
+                    /////////////////
+                    const dec_cid = decrypt(cid, process.env.REACT_APP_ENCRYPTION_KEY);
+                    console.log('decrypted: ',decrypted);
                     let data = [];
 
                     for await (const chunk of stream) {
                         data.push(chunk);
                     }
+                    console.log('data: ',data);
                     // Create a Blob from the data 
                     const blob = new Blob(data, { type: 'image/jpeg' });
                     // Create a URL from the Blob
                     const url = URL.createObjectURL(blob);
                     const fileInfo = await contract.viewFileInfo(cid);
-                    urls.push({ cid: cid, url: url, fileName: fileInfo[1]}); // Filename is in FileInfo[1]
+                    urls.push({ cid: cid, url: url, fileName: fileInfo[1], decrypted: dec_cid}); // Filename is in FileInfo[1]
                     
                     console.log('File Info:', fileInfo[1]);
                     //setFileUrls(prevUrls => ({ ...prevUrls, [cid]: { url, fileInfo } }));
@@ -239,7 +244,8 @@ function FileUploaderComponent() {
             {fileUrls.map((file, index) => (
                 <div className='file' key={index}>
                     <p>File name: {file.fileName}</p>
-                    <a href={file.url} download>Download File</a>
+                    {/* <a href={file.url} download>Download File</a> */}
+                    <a href={'ipfs://' + file.decrypted} download>Download File</a> 
                 </div>
 
             ))}

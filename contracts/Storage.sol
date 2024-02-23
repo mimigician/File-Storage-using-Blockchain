@@ -6,6 +6,7 @@ contract Storage {
     mapping(string => mapping(address => bool)) private accessList;
     mapping(address => string[]) private uploaderFiles;
     mapping(string => File) private cids;
+    mapping(string => address[]) public accessListAddresses;
 
     struct File {
         string uploaderName;
@@ -30,13 +31,27 @@ contract Storage {
         require(msg.sender == owner, "Only the contract owner can call this function");
         _;
     }
+    function getAccessList() public view returns (address[] memory) {
+        require(uploaderFiles[msg.sender].length > 0, "No files uploaded by this address");
+        
+        string memory temp = uploaderFiles[msg.sender][0];
+        return accessListAddresses[temp];
+    }
 
     function grantAccess(string memory cid, address user) public  {
         accessList[cid][user] = true;
+        accessListAddresses[cid].push(user);
     }
 
     function revokeAccess(string memory cid, address user) public  {
         accessList[cid][user] = false;
+        for (uint i = 0; i < accessListAddresses[cid].length; i++) {
+        if (accessListAddresses[cid][i] == user) {
+            accessListAddresses[cid][i] = accessListAddresses[cid][accessListAddresses[cid].length - 1];
+            accessListAddresses[cid].pop();
+            break;
+        }
+    }
     }
 
     function canAccess(string memory cid, address user) public view returns (bool) {
@@ -129,6 +144,30 @@ contract Storage {
             }
         }
     }
+
+    // function getAccessList(address uploaderAddress) public view returns (address[] memory) {
+    //     require(uploaderAddress != address(0), "Invalid uploader address");
+
+    // // Get all the CIDs uploaded by the uploader
+    //     string[] memory uploadedCids = uploaderFiles[uploaderAddress];
+
+    // // Initialize an array to store the addresses
+    //     address[] memory accessListAddresses;
+
+    
+    //     // Get the access list for the current CID
+    //     mapping(address => bool) storage accessListForCid = accessList[uploadedCids[1]];
+
+    //     // Iterate through all addresses in the access list
+    //     for (uint256 j = 0; j < accessListForCid.length; j++) {
+    //         // If the address has access, add it to the array
+    //         if (accessListForCid[j]) {
+    //             accessListAddresses.push(j);
+    //         }
+    //     }
+
+    //     return accessListAddresses;
+    // }
 
     
 }
